@@ -1,4 +1,4 @@
-package sensorrestserver.util.SensorExceptions;
+package weathesensorrestapp.util.SensorExceptions;
 
 public class SensorNotCreatedException extends RuntimeException{
 

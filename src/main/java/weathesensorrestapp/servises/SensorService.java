@@ -1,12 +1,12 @@
-package sensorrestserver.servises;
+package weathesensorrestapp.servises;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sensorrestserver.models.Sensor;
-import sensorrestserver.repositories.SensorRepo;
-import sensorrestserver.util.SensorExceptions.SensorNameNotAvailableException;
-import sensorrestserver.util.SensorExceptions.SensorNotFoundException;
+import weathesensorrestapp.models.Sensor;
+import weathesensorrestapp.repositories.SensorRepo;
+import weathesensorrestapp.util.SensorExceptions.SensorNameNotAvailableException;
+import weathesensorrestapp.util.SensorExceptions.SensorNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +27,7 @@ public class SensorService {
     }
 
     public Sensor findById(int id) {
-        Sensor sensor = sensorRepo.findById(id).orElseThrow(SensorNotFoundException::new);
-//        System.out.println(sensor.getMeasurementList());
-        return sensor;
+        return sensorRepo.findById(id).orElseThrow(SensorNotFoundException::new);
     }
 
     @Transactional

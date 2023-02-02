@@ -1,4 +1,4 @@
-package sensorrestserver.models;
+package weathesensorrestapp.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -35,9 +35,7 @@ public class Sensor {
     @OneToMany(mappedBy = "sensor")
     private List<Measurement> measurementList;
 
-    public Sensor(String name, LocalDateTime registrationTime, List<Measurement> measurementList) {
+    public Sensor(String name) {
         this.name = name;
-        this.registrationTime = registrationTime;
-        this.measurementList = measurementList;
     }
 }

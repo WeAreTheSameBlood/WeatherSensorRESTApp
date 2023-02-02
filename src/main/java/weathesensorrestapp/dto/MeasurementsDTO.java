@@ -1,18 +1,29 @@
-package sensorrestserver.dto;
+package weathesensorrestapp.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MeasurementsDTO {
 
-    @NotEmpty(message = "Sensor id not should be empty")
-    @Size(min = 1, message = "Sensor id should be more than 0")
-    private int sensorId;
+    @NotNull(message = "Sensor in Measurement.class is NULL")
+    private SensorDTO sensor;
 
-    @NotEmpty(message = "Temperature not should be empty")
+    @NotNull
+    @Min(value = -100, message = "Temperature should be between -100...+100°C")
+    @Max(value = 100, message = "Temperature should be between -100...+100°C")
     private float temperatureCelsius;
 
-    @NotEmpty(message = "Raining not should be empty")
+    @NotNull
     private boolean raining;
 }

@@ -1,4 +1,4 @@
-package sensorrestserver.controllers;
+package weathesensorrestapp.controllers;
 
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import sensorrestserver.dto.SensorDTO;
-import sensorrestserver.models.Sensor;
-import sensorrestserver.servises.SensorService;
-import sensorrestserver.util.SensorExceptions.SensorErrorResponse;
-import sensorrestserver.util.SensorExceptions.SensorNameNotAvailableException;
-import sensorrestserver.util.SensorExceptions.SensorNotCreatedException;
-import sensorrestserver.util.SensorExceptions.SensorNotFoundException;
+import weathesensorrestapp.dto.SensorDTO;
+import weathesensorrestapp.models.Sensor;
+import weathesensorrestapp.servises.SensorService;
+import weathesensorrestapp.util.ErrorResponse;
+import weathesensorrestapp.util.SensorExceptions.SensorNameNotAvailableException;
+import weathesensorrestapp.util.SensorExceptions.SensorNotCreatedException;
+import weathesensorrestapp.util.SensorExceptions.SensorNotFoundException;
 
 import java.util.List;
 
@@ -66,8 +66,8 @@ public class SensorsController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<SensorErrorResponse> handleException(SensorNotFoundException e) {
-        SensorErrorResponse errorResponse = new SensorErrorResponse(
+    private ResponseEntity<ErrorResponse> handleException(SensorNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
                 "Sensor with this id not found.",
                 System.currentTimeMillis()
         );
@@ -75,8 +75,8 @@ public class SensorsController {
     }
 
     @ExceptionHandler({SensorNotCreatedException.class, SensorNameNotAvailableException.class})
-    private ResponseEntity<SensorErrorResponse> handleException(Exception e) {
-        SensorErrorResponse errorResponse = new SensorErrorResponse(
+    private ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(
                 e.getMessage(),
                 System.currentTimeMillis()
         );

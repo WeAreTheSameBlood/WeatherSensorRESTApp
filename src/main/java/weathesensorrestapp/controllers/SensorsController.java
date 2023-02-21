@@ -1,7 +1,6 @@
 package weathesensorrestapp.controllers;
 
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import weathesensorrestapp.dto.SensorDTO;
 import weathesensorrestapp.models.Sensor;
 import weathesensorrestapp.servises.SensorService;
 import weathesensorrestapp.util.ErrorResponse;
+import weathesensorrestapp.dto.MapperDTO;
 import weathesensorrestapp.util.SensorExceptions.SensorNameNotAvailableException;
 import weathesensorrestapp.util.SensorExceptions.SensorNotCreatedException;
 import weathesensorrestapp.util.SensorExceptions.SensorNotFoundException;
@@ -23,18 +23,18 @@ import java.util.List;
 public class SensorsController {
 
     private final SensorService sensorService;
-    private final ModelMapper modelMapper;
+    private final MapperDTO mapperDTO;
 
     @Autowired
     public SensorsController(SensorService sensorService,
-                             ModelMapper modelMapper) {
+                             MapperDTO mapperDTO) {
         this.sensorService = sensorService;
-        this.modelMapper = modelMapper;
+        this.mapperDTO = mapperDTO;
     }
 
     @GetMapping()
-    public List<Sensor> getSensors(){
-        return sensorService.findAll();
+    public List<SensorDTO> getSensors() {
+        return mapperDTO.mappingData(sensorService.findAll(), SensorDTO.class);
     }
 
     @GetMapping("/{id}")
@@ -44,7 +44,7 @@ public class SensorsController {
 
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> createNewSensor(@RequestBody @Valid SensorDTO sensorDTO,
-                                                      BindingResult bindingResult){
+                                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -57,12 +57,8 @@ public class SensorsController {
             throw new SensorNotCreatedException(errorMsg.toString());
         }
 
-        sensorService.save(convertToSensor(sensorDTO));
+        sensorService.save(mapperDTO.mappingData(sensorDTO, Sensor.class));
         return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    private Sensor convertToSensor(SensorDTO sensorDTO) {
-        return modelMapper.map(sensorDTO, Sensor.class);
     }
 
     @ExceptionHandler

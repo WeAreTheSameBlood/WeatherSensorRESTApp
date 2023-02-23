@@ -8,14 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeasurementsDTO {
 
-    @NotNull(message = "Sensor in Measurement.class is NULL")
-    private SensorDTO sensor;
+    private LocalDateTime updateTime;
 
     @NotNull
     @Min(value = -100, message = "Temperature should be between -100...+100°C")

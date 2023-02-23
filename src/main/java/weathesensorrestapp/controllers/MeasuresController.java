@@ -7,18 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import weathesensorrestapp.dto.MapperDTO;
 import weathesensorrestapp.dto.MeasurementsDTO;
 import weathesensorrestapp.models.Measurement;
 import weathesensorrestapp.servises.MeasurementsService;
-import weathesensorrestapp.dto.MapperDTO;
-import weathesensorrestapp.util.MeasureExceptions.MeasureErrorIncorrectFields;
 import weathesensorrestapp.util.ErrorResponse;
+import weathesensorrestapp.util.MeasureExceptions.MeasureErrorIncorrectFields;
 import weathesensorrestapp.util.MeasureExceptions.MeasureErrorIncorrectSensorNameException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/measurements")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MeasuresController {
 
     private final MeasurementsService measuresService;
@@ -35,9 +36,17 @@ public class MeasuresController {
         return mapperDTO.mappingData(measuresService.findAll(), MeasurementsDTO.class);
     }
 
+    @GetMapping("/bySensorName")
+    public List<MeasurementsDTO> getMeasuresForSensor(
+            @RequestParam(required = true) String sensorName) {
+        return mapperDTO.mappingData(
+                measuresService.findAllBySensorName(sensorName), MeasurementsDTO.class);
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addMeasure(@RequestBody @Valid MeasurementsDTO measurementsDTO,
-                                                 BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> addMeasure(
+            @RequestBody @Valid MeasurementsDTO measurementsDTO,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -54,9 +63,10 @@ public class MeasuresController {
     }
 
     @GetMapping("/rainyDaysCount")
-    public int getRainyDaysCount(@RequestParam(required = false) String name) {
-        System.out.println(name);
-        if (name == null) throw new MeasureErrorIncorrectSensorNameException("Sensor name should be named!");
+    public int getRainyDaysCount(
+            @RequestParam(required = false) String name) {
+        if (name == null)
+            throw new MeasureErrorIncorrectSensorNameException("Sensor name should be named!");
         return measuresService.getRainyDaysCountForSensor(name);
     }
 

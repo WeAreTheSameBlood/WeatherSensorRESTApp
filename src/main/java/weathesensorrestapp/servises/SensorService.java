@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import weathesensorrestapp.models.Sensor;
 import weathesensorrestapp.repositories.SensorRepo;
 import weathesensorrestapp.util.SensorExceptions.SensorNameNotAvailableException;
-import weathesensorrestapp.util.SensorExceptions.SensorNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,10 +23,6 @@ public class SensorService {
 
     public List<Sensor> findAll(){
         return sensorRepo.findAll();
-    }
-
-    public Sensor findById(int id) {
-        return sensorRepo.findById(id).orElseThrow(SensorNotFoundException::new);
     }
 
     @Transactional

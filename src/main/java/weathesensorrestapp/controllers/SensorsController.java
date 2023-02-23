@@ -14,12 +14,12 @@ import weathesensorrestapp.util.ErrorResponse;
 import weathesensorrestapp.dto.MapperDTO;
 import weathesensorrestapp.util.SensorExceptions.SensorNameNotAvailableException;
 import weathesensorrestapp.util.SensorExceptions.SensorNotCreatedException;
-import weathesensorrestapp.util.SensorExceptions.SensorNotFoundException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/sensors")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SensorsController {
 
     private final SensorService sensorService;
@@ -33,13 +33,8 @@ public class SensorsController {
     }
 
     @GetMapping()
-    public List<SensorDTO> getSensors() {
+    public List<SensorDTO> getSensor() {
         return mapperDTO.mappingData(sensorService.findAll(), SensorDTO.class);
-    }
-
-    @GetMapping("/{id}")
-    public Sensor getOneSensor(@PathVariable("id") int id) {
-        return sensorService.findById(id);
     }
 
     @PostMapping("/registration")
@@ -59,15 +54,6 @@ public class SensorsController {
 
         sensorService.save(mapperDTO.mappingData(sensorDTO, Sensor.class));
         return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(SensorNotFoundException e) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                "Sensor with this id not found.",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({SensorNotCreatedException.class, SensorNameNotAvailableException.class})

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weathesensorrestapp.models.Measurement;
+import weathesensorrestapp.models.Sensor;
 import weathesensorrestapp.repositories.MeasurementsRepo;
 import weathesensorrestapp.repositories.SensorRepo;
 import weathesensorrestapp.util.MeasureExceptions.MeasureErrorIncorrectSensorNameException;
@@ -27,20 +28,34 @@ public class MeasurementsService {
         return measureRepo.findAll();
     }
 
+    public List<Measurement> findAllBySensorName(String sensorName){
+        return measureRepo
+                .findAllBySensor(findSensorByName(sensorName));
+    }
+
     @Transactional
     public void addMeasure(Measurement measurement) {
         measurement.setUpdateTime(LocalDateTime.now());
-        measurement.setSensor(sensorRepo
-                .findByName(measurement.getSensor().getName())
-                .orElseThrow(() -> new MeasureErrorIncorrectSensorNameException("Sensor with this name NOT FOND!")));
+        measurement.setSensor(
+                findSensorByName(measurement.getSensor().getName())
+        );
 
         measureRepo.save(measurement);
     }
 
     public int getRainyDaysCountForSensor(String sensorName) {
-        return measureRepo.findAllBySensorAndRainingTrue(sensorRepo
-                        .findByName(sensorName)
-                        .orElseThrow(() -> new MeasureErrorIncorrectSensorNameException("Sensor with this name NOT FOND!")))
+        return measureRepo
+                .findAllBySensorAndRainingTrue(findSensorByName(sensorName))
                 .size();
+    }
+
+    private Sensor findSensorByName(String sensorName) {
+        return sensorRepo
+                .findByName(sensorName)
+                .orElseThrow(
+                        () -> new MeasureErrorIncorrectSensorNameException(
+                                "Sensor with this name NOT FOND!"
+                        )
+                );
     }
 }
